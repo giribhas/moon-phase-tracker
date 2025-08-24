@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Moon Phase Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0c10;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .moon-phase {
+      font-size: 1.2em;
+      margin: 10px;
+    }
+    .forecast {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .day {
+      background: #1f2833;
+      border-radius: 12px;
+      padding: 10px;
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌙 Moon Phase Tracker</h1>
+  <div id="today"></div>
+  <button onclick="showForecast()">Next 7 Days</button>
+  <div class="forecast" id="forecast"></div>
+
+<script>
+const phases = [
+  "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous",
+  "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"
+];
+
+// Simple moon phase calculation (approximate)
+function getMoonPhase(date) {
+  const lp = 2551443; // lunar period in seconds
+  const now = date / 1000;
+  const new_moon = new Date(1970, 0, 7, 20, 35).getTime() / 1000;
+  const phase = ((now - new_moon) % lp) / (lp / 8);
+  return phases[Math.floor(phase)];
+}
+
+function todayPhase() {
+  const today = new Date();
+  document.getElementById("today").innerHTML =
+    `<h2>Today: ${today.toDateString()}</h2>
+     <div class="moon-phase">${getMoonPhase(today)}</div>`;
+}
+
+function showForecast() {
+  let forecastDiv = document.getElementById("forecast");
+  forecastDiv.innerHTML = "";
+  for (let i = 1; i <= 7; i++) {
+    let date = new Date();
+    date.setDate(date.getDate() + i);
+    let phase = getMoonPhase(date);
+    forecastDiv.innerHTML += `
+      <div class="day">
+        <strong>${date.toDateString().split(" ").slice(0,3).join(" ")}</strong><br>
+        <div class="moon-phase">${phase}</div>
+      </div>`;
+  }
+}
+
+todayPhase();
+</script>
+</body>
+</html>
